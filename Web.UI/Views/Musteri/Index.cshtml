@@ -1,0 +1,189 @@
+﻿@model IEnumerable<HKORentACar.Core.Concretes.Entities.AppUser>
+
+@{
+    ViewData["Title"] = "Kayıtlı Müşteriler - Admin Paneli";
+}
+
+<style>
+    :root {
+        --brand-orange: #e85012;
+        --brand-orange-hover: #cf430b;
+    }
+
+    .table-container-card {
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .custom-table th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #64748b;
+        font-weight: 700;
+        background: #f8fafc;
+        border-bottom: 1.5px solid #e2e8f0;
+        padding: 14px 16px;
+    }
+
+    .custom-table td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+    }
+
+    .avatar-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: #fff3ed;
+        color: var(--brand-orange);
+        font-weight: 700;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .guid-badge {
+        font-family: monospace;
+        background: #f8fafc;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
+
+    .btn-delete-client {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-delete-client:hover {
+            background-color: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+</style>
+
+<div class="container my-5">
+    
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <span class="text-uppercase fw-bold small" style="color: var(--brand-orange); letter-spacing: 1px;">Kullanıcı Masası</span>
+            <h2 class="fw-bold mb-1 text-dark">👥 Kayıtlı Müşteriler</h2>
+            <p class="text-muted mb-0">Sistemdeki aktif müşteri hesaplarını ve iletişim bilgilerini yönetin.</p>
+        </div>
+        <div class="align-self-start align-self-md-center">
+            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold shadow-sm">
+                Toplam Müşteri: @Model.Count()
+            </span>
+        </div>
+    </div>
+
+    
+    @if (TempData["Basari"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center justify-content-between p-3" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-5">✅</span>
+                <span class="fw-semibold">@TempData["Basari"]</span>
+            </div>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (TempData["Hata"] != null)
+    {
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center justify-content-between p-3" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-5">⚠️</span>
+                <span class="fw-semibold">@TempData["Hata"]</span>
+            </div>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    
+    <div class="table-container-card">
+        <div class="table-responsive">
+            <table class="table custom-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4" style="width: 140px;">Kullanıcı ID</th>
+                        <th>Müşteri</th>
+                        <th>E-Posta Adresi</th>
+                        <th>İletişim Telefonu</th>
+                        <th class="text-center pe-4" style="width: 120px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <div class="display-6 mb-2 opacity-50">👤</div>
+                                <h6 class="fw-bold">Kayıtlı Müşteri Yok</h6>
+                                <small>Sistemde henüz kayıt açmış bir kullanıcı bulunmuyor.</small>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            var initial = !string.IsNullOrEmpty(item.Ad) ? item.Ad.Substring(0, 1).ToUpper() : "U";
+
+                            <tr>
+                                <td class="ps-4">
+                                    <span class="guid-badge" title="@item.Id">
+                                        @(item.Id.Length > 8 ? item.Id.Substring(0, 8) + "..." : item.Id)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="avatar-circle">
+                                            @initial
+                                        </div>
+                                        <div>
+                                            <strong class="text-dark d-block">@item.Ad @item.Soyad</strong>
+                                            <small class="text-muted">Bireysel Müşteri</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-secondary fw-medium">@item.Email</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                                    {
+                                        <span class="text-dark font-monospace small">@item.PhoneNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Belirtilmemiş</span>
+                                    }
+                                </td>
+                                <td class="pe-4 text-center">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('@item.Ad @item.Soyad isimli müşteriyi silmek istediğinizden emin misiniz? (Aktif kiralaması varsa silinemez)');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger btn-delete-client px-3 py-1 shadow-none">
+                                            Sil
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

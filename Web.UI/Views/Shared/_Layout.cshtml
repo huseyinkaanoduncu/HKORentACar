@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HKO Rent A Car</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Web.UI.styles.css" asp-append-version="true" />
+    <style>
+            .navbar-brand-custom {
+                font-size: 1.35rem;
+                letter-spacing: -0.5px;
+            }
+
+            .nav-link-custom {
+                transition: color 0.15s ease, background-color 0.15s ease;
+            }
+
+                .nav-link-custom:hover {
+                    color: #e85012 !important;
+                }
+
+            .btn-brand-nav {
+                background: #e85012;
+                color: #ffffff;
+                border-radius: 50rem;
+                transition: all 0.2s ease;
+            }
+
+                .btn-brand-nav:hover {
+                    background: #cf430b;
+                    color: #ffffff;
+                    transform: translateY(-1px);
+                }
+    </style>
+</head>
+<body class="bg-light">
+    
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2">
+            <div class="container">
+
+                
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <div class="d-flex align-items-center justify-content-center shadow-sm"
+                         style="width: 42px; height: 42px; background: linear-gradient(135deg, #e85012 0%, #cf430b 100%); border-radius: 12px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 3C2 11.2 2 11.6 2 12v4c0 .6.4 1 1 1h2" />
+                            <circle cx="7" cy="17" r="2" />
+                            <path d="M9 17h6" />
+                            <circle cx="17" cy="17" r="2" />
+                        </svg>
+                    </div>
+                    <span class="fs-4 fw-bolder text-dark" style="letter-spacing: -0.5px;">HKO<span style="color: #e85012;">Rent</span></span>
+                </a>
+
+                
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-lg-1">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom text-dark fw-semibold px-3 rounded-pill" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom text-dark fw-semibold px-3 rounded-pill" asp-controller="Arac" asp-action="Index">Araçlar & Filo</a>
+                        </li>
+
+                        @* Sadece Giriş Yapan Müşteriler Görür *@
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-custom text-dark fw-semibold px-3 rounded-pill" asp-controller="Kiralama" asp-action="Index">📋 Kiralamalarım</a>
+                            </li>
+                        }
+
+                        @* Sadece Admin Görür *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-custom text-dark fw-semibold px-3 rounded-pill" asp-controller="Musteri" asp-action="Index">👥 Müşteriler</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold text-danger px-3 rounded-pill bg-danger bg-opacity-10 border border-danger border-opacity-10" asp-controller="Kiralama" asp-action="Yonetim">
+                                    🛠️ Kiralama Yönetimi
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <div class="d-flex align-items-center gap-2 bg-light px-3 py-1 rounded-pill border">
+                                <span class="fs-6">👋</span>
+                                <span class="small fw-bold text-dark">
+                                    @(User.FindFirst("TamAd")?.Value ?? User.Identity.Name?.Split('@')[0])
+                                </span>
+                            </div>
+
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-semibold shadow-none">
+                                Çıkış Yap
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline-dark rounded-pill px-3 fw-semibold shadow-none">
+                                Giriş Yap
+                            </a>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-sm btn-brand-nav px-3 fw-semibold shadow-sm text-decoration-none">
+                                Kayıt Ol
+                            </a>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="container my-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-top footer text-muted mt-auto py-4 bg-white shadow-sm">
+        <div class="container text-center small">
+            &copy; 2026 - <strong class="text-dark">HKO Rent A Car</strong> • Tüm Hakları Saklıdır.
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

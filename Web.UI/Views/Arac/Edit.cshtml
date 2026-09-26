@@ -1,0 +1,177 @@
+﻿@model HKORentACar.Core.Concretes.DTOs.AracDto
+
+@{
+    ViewData["Title"] = "Araç Düzenle - Admin Paneli";
+}
+
+<style>
+    :root {
+        --brand-orange: #e85012;
+        --brand-orange-hover: #cf430b;
+    }
+
+    .edit-container-card {
+        border-radius: 24px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .admin-form-input {
+        background-color: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .admin-form-input:focus {
+            background-color: #ffffff;
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 4px rgba(232, 80, 18, 0.12);
+        }
+
+    .preview-image-box {
+        width: 100%;
+        height: 180px;
+        background: #f8fafc;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .preview-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .btn-brand-save {
+        background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-hover) 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-brand-save:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(232, 80, 18, 0.35);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+            <div class="edit-container-card">
+
+                
+                <div class="p-4 p-md-5 pb-0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold small" style="color: var(--brand-orange); letter-spacing: 1px;">Filo Yönetimi</span>
+                        <span class="badge bg-dark rounded-pill px-3 py-2 font-monospace">@Model.Plaka</span>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-1">Araç Bilgilerini Güncelle</h2>
+                    <p class="text-muted small">Filodaki aracın teknik özelliklerini, lokasyonunu ve kiralama bedelini güncelleyin.</p>
+                </div>
+
+                <div class="p-4 p-md-5 pt-3">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ResimUrl" />
+
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase mb-2">Mevcut Araç Görseli</label>
+                            <div class="preview-image-box">
+                                <img src="@(string.IsNullOrEmpty(Model.ResimUrl) ? "https://via.placeholder.com/600x300?text=Resim+Yok" : Model.ResimUrl)"
+                                     alt="@Model.Marka @Model.Model"
+                                     id="mevcutResim"
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/600x300?text=Resim+Yok';" />
+                            </div>
+                        </div>
+
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Marka</label>
+                                <input asp-for="Marka" class="form-control admin-form-input shadow-none" placeholder="Örn: Renault" required />
+                                <span asp-validation-for="Marka" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Model</label>
+                                <input asp-for="Model" class="form-control admin-form-input shadow-none" placeholder="Örn: Megane" required />
+                                <span asp-validation-for="Model" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Model Yılı</label>
+                                <input asp-for="Yil" type="number" class="form-control admin-form-input shadow-none" required />
+                                <span asp-validation-for="Yil" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Plaka</label>
+                                <input asp-for="Plaka" class="form-control admin-form-input shadow-none text-uppercase" required />
+                                <span asp-validation-for="Plaka" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Günlük Kira Ücreti (₺)</label>
+                                <input asp-for="GunlukUcret" type="number" step="0.01" class="form-control admin-form-input shadow-none" required />
+                                <span asp-validation-for="GunlukUcret" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                       
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Güncel KM</label>
+                                <input asp-for="KM" type="number" class="form-control admin-form-input shadow-none" required />
+                                <span asp-validation-for="KM" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Görsel Değiştir (İsteğe Bağlı)</label>
+                                <input asp-for="ResimDosyasi" type="file" class="form-control admin-form-input shadow-none" accept="image/*" />
+                                <span asp-validation-for="ResimDosyasi" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Araç Segmenti / Kategori</label>
+                                <select asp-for="KategoriId" asp-items="ViewBag.KategoriListesi" class="form-select admin-form-input shadow-none" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Bağlı Olduğu Şube</label>
+                                <select asp-for="SubeId" asp-items="ViewBag.SubeListesi" class="form-select admin-form-input shadow-none" required></select>
+                            </div>
+                        </div>
+
+                       
+                        <div class="d-flex justify-content-end align-items-center gap-3 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light rounded-pill px-4 py-2 text-muted fw-semibold border">
+                                Vazgeç
+                            </a>
+                            <button type="submit" class="btn btn-brand-save px-4 py-2">
+                                Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

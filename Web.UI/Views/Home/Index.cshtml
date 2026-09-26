@@ -1,0 +1,458 @@
+﻿@model IEnumerable<HKORentACar.Core.Concretes.DTOs.AracDto>
+
+@{
+    ViewData["Title"] = "Premium Araç Kiralama - HKO Rent A Car";
+}
+
+<style>
+    :root {
+        --primary-brand: #e85012;
+        --primary-hover: #cf430b;
+        --dark-surface: #111827;
+    }
+
+    .hero-wrapper {
+        position: relative;
+        border-radius: 28px;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.92) 0%, rgba(17, 24, 39, 0.70) 50%, rgba(17, 24, 39, 0.40) 100%), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80') center right/cover no-repeat;
+        min-height: 480px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .glass-search-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 24px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+        margin-top: -60px;
+        position: relative;
+        z-index: 20;
+    }
+
+    .custom-input-box {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 10px 16px;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .custom-input-box:focus-within {
+            background: #ffffff;
+            border-color: var(--primary-brand);
+            box-shadow: 0 0 0 4px rgba(232, 80, 18, 0.12);
+        }
+
+    .btn-brand {
+        background: linear-gradient(135deg, var(--primary-brand) 0%, var(--primary-hover) 100%);
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-brand:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(232, 80, 18, 0.4);
+        }
+
+    .vehicle-card {
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+        background: #ffffff;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+    }
+
+        .vehicle-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+    .vehicle-img-wrap {
+        position: relative;
+        height: 210px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+
+        .vehicle-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .vehicle-card:hover .vehicle-img-wrap img {
+        transform: scale(1.05);
+    }
+
+    .badge-status {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        border-radius: 30px;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-square {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        background: #fff3ed;
+        color: var(--primary-brand);
+    }
+</style>
+
+<div class="hero-wrapper p-4 p-md-5 mb-5">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8 text-white">
+                <span class="badge bg-white bg-opacity-20 text-black px-3 py-2 rounded-pill fw-semibold mb-3 border border-white border-opacity-25">
+                    ✨ Konforlu & Güvenilir Yolculuk
+                </span>
+                <h1 class="display-3 fw-bold mb-3 tracking-tight" style="line-height: 1.15;">
+                    Her yolda, <br class="d-none d-md-inline" />her koşulda <span style="color: #ff7843;">yanında.</span>
+                </h1>
+                <p class="fs-5 text-light opacity-75 mb-4" style="max-width: 580px;">
+                    HKO Rent A Car güvencesiyle son model araçları en uygun fiyat ve şeffaf sözleşme koşullarıyla anında kiralayın.
+                </p>
+                <div class="d-flex gap-4 text-light small fw-medium">
+                    <div>✓ 7/24 Yol Yardımı</div>
+                    <div>✓ Sıfır Gizli Ücret</div>
+                    <div>✓ Kasko & Güvence Dahil</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container px-3 px-md-4 mb-5">
+    <div class="glass-search-card p-4 mx-auto" style="max-width: 1120px;">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <button type="button" class="btn btn-sm btn-dark rounded-pill px-4 py-2 fw-semibold" id="btnGunluk" onclick="setKiralamaTuru('gunluk')">
+                Günlük Kiralama
+            </button>
+            <button type="button" class="btn btn-sm btn-light text-secondary rounded-pill px-4 py-2 fw-semibold" id="btnAylik" onclick="setKiralamaTuru('aylik')">
+                Aylık Filo
+            </button>
+        </div>
+
+        <form asp-controller="Arac" asp-action="Index" method="get">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-4 col-md-12">
+                    <div class="custom-input-box">
+                        <small class="text-muted fw-bold d-block text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">📍 Alış Şubesi</small>
+                        <select name="subeId" class="form-select border-0 bg-transparent fw-bold p-0 shadow-none text-dark" style="cursor: pointer;" asp-items="ViewBag.Subeler">
+                            <option value="">Teslimat Noktası Seçiniz</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="custom-input-box">
+                        <small class="text-muted fw-bold d-block text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">📅 Alış Tarihi & Saati</small>
+                        <input type="datetime-local" name="baslangic" id="alisTarihiInput" class="form-control border-0 bg-transparent fw-bold p-0 shadow-none text-dark" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="custom-input-box">
+                        <small class="text-muted fw-bold d-block text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">📅 İade Tarihi & Saati</small>
+                        <input type="datetime-local" name="bitis" id="iadeTarihiInput" class="form-control border-0 bg-transparent fw-bold p-0 shadow-none text-dark" value="@DateTime.Now.AddDays(2).ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-12 d-grid">
+                    <button type="submit" class="btn btn-brand py-3">
+                        Araçları Gör
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="farkliLokasyon">
+                    <label class="form-check-label text-muted small fw-medium" for="farkliLokasyon">
+                        Aracı farklı bir şubeye iade etmek istiyorum
+                    </label>
+                </div>
+                <span class="text-muted small">⚡ Anında Onay & Hızlı Teslimat</span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container my-5 py-3">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-4 border shadow-sm h-100">
+                <div class="icon-square">🛡️</div>
+                <div>
+                    <h6 class="fw-bold mb-1">Tam Kasko Güvencesi</h6>
+                    <small class="text-muted">Tüm araçlarımızda standart güvence paketi dahildir.</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-4 border shadow-sm h-100">
+                <div class="icon-square">⚡</div>
+                <div>
+                    <h6 class="fw-bold mb-1">Hızlı Anahtar Teslim</h6>
+                    <small class="text-muted">Şubede beklemeden 3 dakikada aracınızı teslim alın.</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-4 border shadow-sm h-100">
+                <div class="icon-square">🏷️</div>
+                <div>
+                    <h6 class="fw-bold mb-1">Şeffaf Fiyatlandırma</h6>
+                    <small class="text-muted">Sürpriz ek maliyet veya gizli hizmet bedeli yoktur.</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-4 border shadow-sm h-100">
+                <div class="icon-square">📞</div>
+                <div>
+                    <h6 class="fw-bold mb-1">7/24 Kesintisiz Destek</h6>
+                    <small class="text-muted">Yol boyunca yanınızda olan profesyonel destek hattı.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5 pt-2">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="text-uppercase fw-bold small" style="color: var(--primary-brand); letter-spacing: 1px;">Filomuz</span>
+            <h2 class="fw-bold mb-0 text-dark">Popüler Kiralık Araçlar</h2>
+        </div>
+        <a asp-controller="Arac" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4 fw-semibold small">
+            Tüm Filoyu İncele (@(Model?.Count() ?? 0)) →
+        </a>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var arac in Model)
+            {
+                bool isMusait = arac.Durum.ToString() == "Musait" || arac.Durum.ToString() == "1";
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="vehicle-card h-100 d-flex flex-column shadow-sm">
+                        <div class="vehicle-img-wrap">
+                            @if (isMusait)
+                            {
+                                <span class="badge badge-status bg-success bg-gradient text-white">Müsait</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-status bg-secondary bg-gradient text-white">Kirada</span>
+                            }
+
+                            <img src="@(string.IsNullOrEmpty(arac.ResimUrl) ? "https://via.placeholder.com/450x260?text=Resim+Yok" : arac.ResimUrl)"
+                                 alt="@arac.Marka @arac.Model"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/450x260?text=Resim+Yok';" />
+                        </div>
+
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-dark">@arac.Marka @arac.Model</h5>
+                                    <span class="text-muted small">Model: @arac.Yil • Plaka: <strong class="text-dark">@arac.Plaka</strong></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between my-3 py-2 border-top border-bottom border-light text-muted small">
+                                <span>👥 5 Koltuk</span>
+                                <span>⚙️ Otomatik</span>
+                            </div>
+
+                            <div class="mt-auto pt-2">
+                                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                                    <span class="text-muted small fw-medium">Günlük Kiralama</span>
+                                    <div>
+                                        <span class="fs-4 fw-bold text-dark">@arac.GunlukUcret.ToString("N0") ₺</span>
+                                        <span class="text-muted small">/ gün</span>
+                                    </div>
+                                </div>
+
+                                @if (isMusait)
+                                {
+                                    <a asp-controller="Kiralama" asp-action="Kirala" asp-route-id="@arac.Id" class="btn btn-brand w-100 py-2 btn-kirala-link">
+                                        Hemen Rezerve Et
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-light text-muted w-100 py-2 fw-semibold border" disabled>
+                                        Şu An Kirada
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="card border-0 rounded-4 overflow-hidden text-white shadow-lg" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+        <div class="card-body p-4 p-md-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">Haftanın Fırsatı</span>
+                    <h3 class="fw-bold mb-2">Erken Rezervasyonda %15 İndirim!</h3>
+                    <p class="text-light opacity-75 mb-0">HKO Rent A Car üyelerine özel kiralama fırsatlarını kaçırmayın. Şubeden anında teslim seçeneğiyle avantajlı çıkın.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <a asp-controller="Arac" asp-action="Index" class="btn btn-light rounded-pill px-4 py-3 fw-bold text-dark shadow">
+                        Filoyu Keşfet →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5 py-4">
+    <div class="text-center mb-5">
+        <h3 class="fw-bold">3 Basit Adımda Yolculuğa Başlayın</h3>
+        <p class="text-muted">HKO Rent A Car ile işlemlerinizi dakikalar içinde tamamlayın.</p>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="p-4 rounded-4 bg-white border h-100 shadow-sm">
+                <div class="display-6 mb-3">📍</div>
+                <h5 class="fw-bold">1. Şube ve Tarih Seçin</h5>
+                <p class="text-muted small mb-0">Teslim alma noktanızı ve kiralama tarihlerinizi arama panelimizden belirleyin.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded-4 bg-white border h-100 shadow-sm">
+                <div class="display-6 mb-3">🚗</div>
+                <h5 class="fw-bold">2. Aracınızı Seçin</h5>
+                <p class="text-muted small mb-0">Bütçenize ve ihtiyaçlarınıza uygun modeli tek tıkla hemen rezerve edin.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 rounded-4 bg-white border h-100 shadow-sm">
+                <div class="display-6 mb-3">🔑</div>
+                <h5 class="fw-bold">3. Anahtarınızı Alın</h5>
+                <p class="text-muted small mb-0">Şubeden aracınızı hemen teslim alıp güvenle yola çıkın.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5 py-4">
+    <div class="text-center mb-5">
+        <h3 class="fw-bold">Sıkça Sorulan Sorular</h3>
+        <p class="text-muted">Kiralama süreci hakkında aklınıza takılan soruların yanıtları</p>
+    </div>
+
+    <div class="accordion border-0 shadow-sm rounded-4 overflow-hidden mx-auto" id="sssAccordion" style="max-width: 850px;">
+        <div class="accordion-item border-0 border-bottom">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    Araç kiralamak için hangi belgeler gereklidir?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#sssAccordion">
+                <div class="accordion-body text-muted small">
+                    Geçerli bir T.C. kimlik kartı veya pasaport ile en az 1 yıllık geçerliliği bulunan sürücü belgenizin yanınızda bulunması yeterlidir.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item border-0 border-bottom">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    Rezervasyonumu iptal edebilir miyim?
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#sssAccordion">
+                <div class="accordion-body text-muted small">
+                    Evet! Profilinizdeki "Kiralamalarım" sayfasından aktif rezervasyonlarınızı teslim alma saatine kadar ücretsiz olarak iptal edebilirsiniz.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                    Kiralama fiyatlarına kasko dahil mi?
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#sssAccordion">
+                <div class="accordion-body text-muted small">
+                    Tüm araçlarımız zorunlu trafik sigortası ve standart kasko güvencesiyle teslim edilmektedir. Ek koruma paketleri opsiyonel olarak sunulur.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function guncelleLinkTarihleri() {
+            const baslangic = document.getElementById('alisTarihiInput').value;
+            const bitis = document.getElementById('iadeTarihiInput').value;
+
+            document.querySelectorAll('.btn-kirala-link').forEach(link => {
+                const url = new URL(link.href, window.location.origin);
+                url.searchParams.set('baslangic', baslangic);
+                url.searchParams.set('bitis', bitis);
+                link.href = url.pathname + url.search;
+            });
+        }
+
+        function setKiralamaTuru(tur) {
+            const alisInput = document.getElementById('alisTarihiInput');
+            const iadeInput = document.getElementById('iadeTarihiInput');
+            const btnGunluk = document.getElementById('btnGunluk');
+            const btnAylik = document.getElementById('btnAylik');
+
+            let alisTarihi = new Date(alisInput.value);
+
+            if (tur === 'aylik') {
+                alisTarihi.setDate(alisTarihi.getDate() + 30);
+                iadeInput.value = alisTarihi.toISOString().slice(0, 16);
+                btnAylik.className = "btn btn-sm btn-dark rounded-pill px-4 py-2 fw-semibold";
+                btnGunluk.className = "btn btn-sm btn-light text-secondary rounded-pill px-4 py-2 fw-semibold";
+            } else {
+                alisTarihi.setDate(alisTarihi.getDate() + 2);
+                iadeInput.value = alisTarihi.toISOString().slice(0, 16);
+                btnGunluk.className = "btn btn-sm btn-dark rounded-pill px-4 py-2 fw-semibold";
+                btnAylik.className = "btn btn-sm btn-light text-secondary rounded-pill px-4 py-2 fw-semibold";
+            }
+            guncelleLinkTarihleri();
+        }
+
+        document.getElementById('alisTarihiInput').addEventListener('change', guncelleLinkTarihleri);
+        document.getElementById('iadeTarihiInput').addEventListener('change', guncelleLinkTarihleri);
+        document.addEventListener('DOMContentLoaded', guncelleLinkTarihleri);
+    </script>
+}

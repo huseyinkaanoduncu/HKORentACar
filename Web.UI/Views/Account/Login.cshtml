@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap - HKO Rent A Car";
+}
+
+<style>
+    :root {
+        --brand-orange: #e85012;
+        --brand-orange-hover: #cf430b;
+        --brand-dark: #0f172a;
+    }
+
+    .auth-wrapper-card {
+        border-radius: 28px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+    }
+
+    .auth-visual-side {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.85) 100%), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80') center center/cover no-repeat;
+        color: #ffffff;
+        padding: 3.5rem 2.5rem;
+    }
+
+    .auth-form-input {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 12px 16px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .auth-form-input:focus {
+            background: #ffffff;
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 4px rgba(232, 80, 18, 0.12);
+        }
+
+    .btn-brand-auth {
+        background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-hover) 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-brand-auth:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(232, 80, 18, 0.4);
+        }
+
+    .demo-badge-box {
+        background: #fff7ed;
+        border: 1px dashed #fdba74;
+        border-radius: 14px;
+        padding: 10px 14px;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="auth-wrapper-card">
+                <div class="row g-0">
+
+                   
+                    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-between auth-visual-side">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-4">
+                                <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm"
+                                      style="width: 38px; height: 38px; background: linear-gradient(135deg, #e85012 0%, #cf430b 100%);">
+                                    🚗
+                                </span>
+                                <span class="fs-4 fw-bold">HKO<span style="color: #e85012;">Rent</span></span>
+                            </div>
+
+                            <h3 class="fw-bold mb-3">Yolculuğa Kaldığın Yerden Devam Et.</h3>
+                            <p class="text-light opacity-75 small">
+                                Rezervasyonlarınızı yönetmek, özel kiralama kampanyalarından yararlanmak ve filoyu incelemek için hesabınıza giriş yapın.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-top border-secondary border-opacity-25 small text-light opacity-75">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>✓</span> Hızlı ve şeffaf sözleşme süreci
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>✓</span> 7/24 kesintisiz kurumsal yol yardımı
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span>✓</span> Sıfır gizli ek maliyet politikası
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-lg-7 p-4 p-md-5 bg-white d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <span class="text-uppercase fw-bold small" style="color: var(--brand-orange); letter-spacing: 1px;">Kullanıcı Girişi</span>
+                            <h2 class="fw-bold text-dark mb-1">Hesabınıza Giriş Yapın</h2>
+                            <p class="text-muted small mb-0">Lütfen sisteme kayıtlı e-posta adresinizi ve şifrenizi girin.</p>
+                        </div>
+
+                        <form asp-action="Login" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="All" class="alert alert-danger border-0 rounded-3 small p-3 mb-3" style="display: @(ViewData.ModelState.IsValid ? "none" : "block");"></div>
+
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">E-Posta Adresi</label>
+                                <input name="email"
+                                       type="email"
+                                       class="form-control auth-form-input shadow-none"
+                                       placeholder="ornek@hko.com"
+                                       required />
+                            </div>
+
+                            
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label fw-bold small text-muted text-uppercase mb-0">Şifre</label>
+                                </div>
+                                <input name="sifre"
+                                       type="password"
+                                       class="form-control auth-form-input shadow-none"
+                                       placeholder="••••••••"
+                                       required />
+                            </div>
+
+                           
+                            <button type="submit" class="btn btn-brand-auth btn-lg w-100 py-3 mb-3 shadow-sm">
+                                Güvenli Giriş Yap
+                            </button>
+
+                            <div class="text-center">
+                                <p class="text-muted small mb-0">
+                                    Henüz bir hesabınız yok mu?
+                                    <a asp-action="Register" class="fw-bold text-decoration-none" style="color: var(--brand-orange);">Hemen Kayıt Olun</a>
+                                </p>
+                            </div>
+                        </form>
+
+                        
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

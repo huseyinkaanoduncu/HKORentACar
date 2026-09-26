@@ -1,0 +1,165 @@
+﻿@model HKORentACar.Core.Concretes.DTOs.MusteriKayitDto
+
+@{
+    ViewData["Title"] = "Kayıt Ol - HKO Rent A Car";
+}
+
+<style>
+    :root {
+        --brand-orange: #e85012;
+        --brand-orange-hover: #cf430b;
+        --brand-dark: #0f172a;
+    }
+
+    .auth-wrapper-card {
+        border-radius: 28px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+    }
+
+    .auth-visual-side {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.85) 100%), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80') center center/cover no-repeat;
+        color: #ffffff;
+        padding: 3.5rem 2.5rem;
+    }
+
+    .auth-form-input {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .auth-form-input:focus {
+            background: #ffffff;
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 4px rgba(232, 80, 18, 0.12);
+        }
+
+    .btn-brand-auth {
+        background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-hover) 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-brand-auth:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(232, 80, 18, 0.4);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="auth-wrapper-card">
+                <div class="row g-0">
+
+                    
+                    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-between auth-visual-side">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-4">
+                                <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm"
+                                      style="width: 38px; height: 38px; background: linear-gradient(135deg, #e85012 0%, #cf430b 100%);">
+                                    🚗
+                                </span>
+                                <span class="fs-4 fw-bold">HKO<span style="color: #e85012;">Rent</span></span>
+                            </div>
+
+                            <h3 class="fw-bold mb-3">Aramıza Hoş Geldiniz.</h3>
+                            <p class="text-light opacity-75 small">
+                                Sadece birkaç saniye içinde hesabınızı oluşturun; dilediğiniz aracı saniyeler içinde kiralayıp yola çıkın.
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-top border-secondary border-opacity-25 small text-light opacity-75">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>✓</span> Hızlı ve tek tıkla online rezervasyon
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>✓</span> Rezervasyon geçmişini kolayca yönetme
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span>✓</span> Üyelere özel indirim ve fırsatlar
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-lg-7 p-4 p-md-5 bg-white d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <span class="text-uppercase fw-bold small" style="color: var(--brand-orange); letter-spacing: 1px;">Müşteri Kaydı</span>
+                            <h2 class="fw-bold text-dark mb-1">Hesap Oluşturun</h2>
+                            <p class="text-muted small mb-0">Bilgilerinizi eksiksiz girerek hemen kayıt olun.</p>
+                        </div>
+
+                        <form asp-action="Register" method="post">
+                            @Html.AntiForgeryToken()
+
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-3 small p-3 mb-3"></div>
+                            }
+
+                            
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted text-uppercase mb-1">Ad</label>
+                                    <input asp-for="Ad" class="form-control auth-form-input shadow-none" placeholder="Adınız" required />
+                                    <span asp-validation-for="Ad" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted text-uppercase mb-1">Soyad</label>
+                                    <input asp-for="Soyad" class="form-control auth-form-input shadow-none" placeholder="Soyadınız" required />
+                                    <span asp-validation-for="Soyad" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">E-Posta Adresi</label>
+                                <input asp-for="Email" type="email" class="form-control auth-form-input shadow-none" placeholder="ornek@hko.com" required />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                           
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Telefon Numarası</label>
+                                <input asp-for="Telefon" class="form-control auth-form-input shadow-none" placeholder="05XX XXX XX XX" required />
+                                <span asp-validation-for="Telefon" class="text-danger small"></span>
+                            </div>
+
+                           
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-muted text-uppercase mb-1">Şifre Belirleyin</label>
+                                <input asp-for="Sifre" type="password" class="form-control auth-form-input shadow-none" placeholder="••••••••" required />
+                                <span asp-validation-for="Sifre" class="text-danger small"></span>
+                            </div>
+
+                           
+                            <button type="submit" class="btn btn-brand-auth btn-lg w-100 py-3 mb-3 shadow-sm">
+                                Hesabı Oluştur ve Katıl
+                            </button>
+
+                            <div class="text-center">
+                                <p class="text-muted small mb-0">
+                                    Zaten bir hesabınız var mı?
+                                    <a asp-action="Login" class="fw-bold text-decoration-none" style="color: var(--brand-orange);">Giriş Yapın</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

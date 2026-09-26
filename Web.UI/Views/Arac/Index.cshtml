@@ -1,0 +1,277 @@
+﻿@model IEnumerable<HKORentACar.Core.Concretes.DTOs.AracDto>
+
+@{
+    ViewData["Title"] = "Araç Filomuz - HKO Rent A Car";
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<style>
+    :root {
+        --brand-orange: #e85012;
+        --brand-orange-hover: #cf430b;
+        --brand-dark: #0f172a;
+    }
+
+    .filter-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-input {
+        background-color: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .filter-input:focus {
+            background-color: #ffffff;
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(232, 80, 18, 0.12);
+        }
+
+    .fleet-item-card {
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        overflow: hidden;
+    }
+
+        .fleet-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.09);
+            border-color: #cbd5e1;
+        }
+
+    .fleet-img-wrap {
+        position: relative;
+        height: 220px;
+        background: #f8fafc;
+        overflow: hidden;
+    }
+
+        .fleet-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+    .fleet-item-card:hover .fleet-img-wrap img {
+        transform: scale(1.04);
+    }
+
+    .plate-badge-fleet {
+        font-family: monospace;
+        letter-spacing: 0.5px;
+        background: #0f172a;
+        color: #ffffff;
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+    }
+
+    .status-badge-floating {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        border-radius: 30px;
+        padding: 5px 13px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        z-index: 2;
+    }
+
+    .btn-brand-fleet {
+        background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-hover) 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+        .btn-brand-fleet:hover {
+            color: #ffffff;
+            box-shadow: 0 8px 18px rgba(232, 80, 18, 0.35);
+            transform: translateY(-1px);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <span class="text-uppercase fw-bold small" style="color: var(--brand-orange); letter-spacing: 1px;">Kiralık Araçlar</span>
+            <h2 class="fw-bold mb-1 text-dark">🚗 Filomuzdaki Araçlar</h2>
+            <p class="text-muted mb-0">Planınıza ve bütçenize en uygun aracı seçin, anında yola çıkın.</p>
+        </div>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold small shadow-sm align-self-start align-self-md-center">
+                ➕ Yeni Araç Tanımla
+            </a>
+        }
+    </div>
+
+    @if (TempData["Basari"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center justify-content-between p-3" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-5">✅</span>
+                <span class="fw-semibold">@TempData["Basari"]</span>
+            </div>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    <div class="filter-card p-3 p-md-4 mb-5">
+        <form asp-action="Index" method="get" class="row g-3 align-items-center">
+            <input type="hidden" name="baslangic" value="@ViewBag.Baslangic" />
+            <input type="hidden" name="bitis" value="@ViewBag.Bitis" />
+
+            <div class="col-lg-5 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0 ps-3">🔍</span>
+                    <input type="text"
+                           name="aramaMetni"
+                           class="form-control filter-input border-start-0 shadow-none py-2"
+                           placeholder="Marka veya model arayın (örn: Renault, Clio, BMW)..."
+                           value="@ViewBag.AramaMetni" />
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <select name="subeId" class="form-select filter-input shadow-none py-2" asp-items="ViewBag.SubeListesi">
+                    <option value="">Tüm Teslimat Şubeleri</option>
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-brand-fleet w-100 py-2 shadow-sm">
+                    Filtrele
+                </button>
+                @if (ViewBag.SeciliSubeId != null || !string.IsNullOrEmpty(ViewBag.AramaMetni))
+                {
+                    <a asp-action="Index" class="btn btn-light border rounded-3 px-3 py-2 text-muted fw-semibold" title="Filtreleri Temizle">
+                        Sıfırla
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+                    <div class="display-4 text-muted mb-3 opacity-50">🔎</div>
+                    <h4 class="fw-bold text-dark">Aramanıza Uygun Araç Bulunamadı</h4>
+                    <p class="text-muted mx-auto mb-4" style="max-width: 460px;">
+                        Farklı filtre kriterleri deneyebilir veya tüm filoyu listelemek için filtreleri sıfırlayabilirsiniz.
+                    </p>
+                    <div>
+                        <a asp-action="Index" class="btn btn-brand-fleet px-4 py-2">Tüm Araçları Göster</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var arac in Model)
+            {
+                bool isMusait = arac.Durum.ToString() == "Musait" || arac.Durum.ToString() == "1";
+                bool isKirada = arac.Durum.ToString() == "Kirada" || arac.Durum.ToString() == "2";
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="fleet-item-card h-100 d-flex flex-column">
+                        <div class="fleet-img-wrap">
+                            @if (isMusait)
+                            {
+                                <span class="status-badge-floating bg-success bg-gradient text-white">Müsait</span>
+                            }
+                            else if (isKirada)
+                            {
+                                <span class="status-badge-floating bg-secondary bg-gradient text-white">Kirada</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge-floating bg-danger bg-gradient text-white">Bakımda</span>
+                            }
+
+                            <img src="@(string.IsNullOrEmpty(arac.ResimUrl) ? "https://via.placeholder.com/450x260?text=Resim+Yok" : arac.ResimUrl)"
+                                 alt="@arac.Marka @arac.Model"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/450x260?text=Resim+Yok';" />
+                        </div>
+
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-dark">@arac.Marka @arac.Model</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="plate-badge-fleet">@arac.Plaka</span>
+                                        <small class="text-muted">@arac.Yil • @arac.KM.ToString("N0") KM</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between my-3 py-2 border-top border-bottom border-light text-muted small">
+                                <span>👥 5 Koltuk</span>
+                                <span>⚙️ Otomatik</span>
+                                <span>🧳 2 Bagaj</span>
+                            </div>
+
+                            <div class="mt-auto pt-2">
+                                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                                    <span class="text-muted small fw-medium">Günlük Fiyat</span>
+                                    <div>
+                                        <span class="fs-4 fw-bold text-dark">@arac.GunlukUcret.ToString("N0") ₺</span>
+                                        <small class="text-muted">/ gün</small>
+                                    </div>
+                                </div>
+
+                                @if (isMusait)
+                                {
+                                    <a asp-controller="Kiralama"
+                                       asp-action="Kirala"
+                                       asp-route-id="@arac.Id"
+                                       asp-route-baslangic="@ViewBag.Baslangic"
+                                       asp-route-bitis="@ViewBag.Bitis"
+                                       class="btn btn-brand-fleet w-100 py-2">
+                                        Hemen Kirala
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-light text-muted w-100 py-2 fw-semibold border" disabled>
+                                        Şu An Müsait Değil
+                                    </button>
+                                }
+
+                                @if (isAdmin)
+                                {
+                                    <div class="d-flex gap-2 mt-3 pt-3 border-top">
+                                        <a asp-action="Edit" asp-route-id="@arac.Id" class="btn btn-sm btn-outline-dark rounded-pill w-50 fw-semibold">
+                                            ✏️ Düzenle
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@arac.Id" method="post" class="w-50" onsubmit="return confirm('Bu aracı filodan silmek istediğinize emin misiniz?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill w-100 fw-semibold">
+                                                🗑️ Sil
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
