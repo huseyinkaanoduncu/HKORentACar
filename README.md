@@ -31,6 +31,5 @@ To get a local copy up and running, follow these simple steps:
 1. Clone the repo:
    ```sh
    git clone [https://github.com/huseyinkaanoduncu/HKORentACar.git](https://github.com/huseyinkaanoduncu/HKORentACar.git)
-
-   Hüseyin Kaan Oduncu - LinkedIn
+Hüseyin Kaan Oduncu - LinkedIn
 Project Link: https://github.com/huseyinkaanoduncu/HKORentACar
